@@ -201,17 +201,23 @@
       <input type="text" name="address" id="address" required>
     </div>
 
-    <!-- أزرار إلغاء/تأكيد الطلبية (تظهر بعد إضافة قطعة) -->
-    <div id="orderControls" class="hidden" aria-hidden="true">
-      <button type="button" id="cancelOrder">❌ إلغاء الطلبية</button>
-      <button type="button" id="confirmOrder">✅ تأكيد الطلبية</button>
-    
+    <!-- أزرار إلغاء/تأكيد الطلبية -->
+<div id="orderControls" class="hidden" aria-hidden="true">
+  <button type="button" id="cancelOrder">❌ إلغاء الطلبية</button>
+  <button type="button" id="confirmOrder">✅ تأكيد الطلبية</button>
+</div>
 
-    <!-- زر الإرسال النهائي (مخفي ومُعطّل حتى تضغط تأكيد) -->
+<!-- زر الإرسال النهائي (مخفي ومُعطّل حتى تضغط تأكيد) -->
+<div id="finalSubmit" class="hidden">
+  <button type="submit" id="submitBtn" disabled>✅ إرسال الطلب</button>
+</div>
     
-      <button type="submit" id="submitBtn" disabled>✅ إرسال الطلب</button>
-    </div>
+confirmOrderBtn.addEventListener("click", () => {
+  submitBtn.disabled = false; // تفعيل زر الإرسال
+  alert("✅ تم تأكيد الطلبية، الآن يمكنك إرسال الطلب");
+});
 
+    
     <div id="loading" class="hidden">
       <img src="https://i.gifer.com/ZZ5H.gif" alt="جاري الإرسال..." width="56">
       <p>⏳ جاري معالجة طلبك...</p>
@@ -481,44 +487,25 @@ document.getElementById("deliveryType").addEventListener("change", updatePrice);
 
     // معالجة الإرسال (تبقى كما كانت)
     document.getElementById("orderForm").addEventListener("submit", function(e){
-      e.preventDefault();
-      // تأكد أن زر الإرسال مفعل
-      if(submitBtn.disabled){
-        alert("الرجاء الضغط على 'تأكيد الطلبية' قبل الإرسال.");
-        return;
-      }
-      const form = this;
-      const formData = new FormData(form);
-      // ضع المجموع النهائي
-      formData.set('total', updatePrice());
-      loadingEl.classList.remove('hidden');
+    document.getElementById("orderForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  loadingEl.classList.remove("hidden");
 
-      fetch(SCRIPT_URL, { method: 'POST', body: formData })
-        .then(res => res.text())
-        .then(data => {
-          loadingEl.classList.add('hidden');
-          // اظهر مودال النجاح
-          document.getElementById('totalPrice').textContent = `💸 المجموع الكلي: ${updatePrice()} دج`;
-          document.getElementById('successModal').style.display = 'flex';
-          // إعادة تهيئة
-          form.reset();
-          piecesContainer.innerHTML = "";
-          pieceCount = 0;
-          personalSection.classList.add("hidden");
-          orderControls.classList.add("hidden");
-          finalSubmitDiv.classList.add("hidden");
-          submitBtn.disabled = true;
-          priceDetailsEl.innerHTML = `💰 السعر : 0 دج<br>💸 السعر الكلي: 0 دج`;
-          confirmOrderBtn.textContent = "✅ تأكيد الطلبية";
-          confirmOrderBtn.disabled = false;
-        })
-        .catch(err => {
-          loadingEl.classList.add('hidden');
-          alert("❌ حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
-          console.error(err);
-        });
+  fetch(SCRIPT_URL, { method: "POST", body: new FormData(this)})
+    .then(res => res.text())
+    .then(() => {
+      loadingEl.classList.add("hidden");
+      document.getElementById("successModal").style.display = "flex";
+      document.getElementById("totalPrice").textContent = priceDetailsEl.textContent;
+      this.reset();
+      piecesContainer.innerHTML = "";
+      submitBtn.disabled = true;
+    })
+    .catch(err => {
+      loadingEl.classList.add("hidden");
+      alert("❌ حدث خطأ أثناء الإرسال: " + err.message);
     });
-
+});
     function closeModal(){ document.getElementById('successModal').style.display = 'none'; }
 
     // Expose some functions globally used in inline handlers
