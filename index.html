@@ -300,21 +300,24 @@
     <!-- القسم الشخصي (مخفي حتى تضغط أضف إلى السلة) -->
     
     
-    
     <div id="personalSection" class="hidden">
-      <label>👤 الاسم الكامل:</label>
-      <input type="text" name="name" id="name" required>
+  <label>👤 الاسم الكامل:</label>
+  <input type="text" name="name" id="name" required autocomplete="name">
 
-      <label for="phone">📞 رقم الهاتف:</label>
-      <input type="tel" id="phone" name="phone" dir="rtl" placeholder="أدخل رقم الهاتف" pattern="^[0-9]{10}$" maxlength="10"
-        required oninvalid="this.setCustomValidity('الرجاء إدخال رقم هاتف صحيح مكون من 10 أرقام')" oninput="this.setCustomValidity('')">
+  <label for="phone">📞 رقم الهاتف:</label>
+  <input type="tel" id="phone" name="phone" dir="rtl" placeholder="أدخل رقم الهاتف"
+    pattern="^[0-9]{10}$" maxlength="10" required
+    oninvalid="this.setCustomValidity('الرجاء إدخال رقم هاتف صحيح مكون من 10 أرقام')"
+    oninput="this.setCustomValidity('')"
+    autocomplete="tel">
 
-      <label>📍 الدائرة:</label>
-      <input type="text" name="daire" id="daire" required>
 
-      <label>🏠 العنوان الكامل:</label>
-      <input type="text" name="address" id="address" required>
-    </div>
+  <label>📍 الدائرة:</label>
+  <input type="text" name="daire" id="daire" required autocomplete="address-level3">
+
+  <label>🏠 العنوان الكامل:</label>
+  <input type="text" name="address" id="address" required autocomplete="street-address">
+</div>
 
     <!-- أزرار إلغاء/تأكيد الطلبية (تظهر بعد إضافة قطعة) -->
     <div id="orderControls" class="hidden" aria-hidden="true">
